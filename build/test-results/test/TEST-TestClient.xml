@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TestClient" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-24T21:59:47" hostname="Igors-MacBook-Pro.local" time="2.836">
+  <properties/>
+  <testcase name="When getting all clients without registering, then the list must be empty." classname="TestClient" time="2.836"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
