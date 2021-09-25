@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="TestClient" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-25T20:20:29" hostname="Igors-MacBook-Pro.local" time="2.138">
+<testsuite name="TestClient" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-25T20:53:10" hostname="Igors-MacBook-Pro.local" time="2.851">
   <properties/>
-  <testcase name="When updating a client, then it must be available in the result" classname="TestClient" time="2.138"/>
+  <testcase name="When updating a client, then the client must be updated." classname="TestClient" time="2.851"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

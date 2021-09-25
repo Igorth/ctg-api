@@ -52,17 +52,32 @@ public class TestClient {
     }
 
     @Test
-    @DisplayName("When updating a client, then it must be available in the result")
+    @DisplayName("When updating a client, then the client must be updated.")
     public void putClient() {
+
+        String newClient = "{\n" +
+                "  \"id\": 1001,\n" +
+                "  \"idade\": 30,\n" +
+                "  \"nome\": \"Igor\",\n" +
+                "  \"risco\": 50\n" +
+                "}";
 
         String updatedClient = "{\n" +
                 "  \"id\": 1001,\n" +
                 "  \"idade\": 35,\n" +
-                "  \"nome\": \"Igory\",\n" +
+                "  \"nome\": \"Igor\",\n" +
                 "  \"risco\": 50\n" +
                 "}";
 
-        String expectedResult = "{\"1001\":{\"nome\":\"Igory\",\"idade\":35,\"id\":1001,\"risco\":50}}";
+        String responseExpected = "{\"1001\":{\"nome\":\"Igor\",\"idade\":35,\"id\":1001,\"risco\":50}}";
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(newClient)
+        .when()
+                .post(urlAPI + endpointClient)
+        .then()
+                .statusCode(201);
 
         given()
                 .contentType(ContentType.JSON)
@@ -71,7 +86,24 @@ public class TestClient {
                 .put(urlAPI + endpointClient)
         .then()
                 .statusCode(200)
-                .body(containsString(expectedResult));
+                .assertThat().body(containsString(responseExpected));
+    }
+
+    @Test
+    @DisplayName("Should delete the client with the given ID")
+    public void deleteCliente() {
+
+        int idClient = 1001;
+        String expectedResult = "CLIENTE REMOVIDO: { NOME: Igor, IDADE: 30, ID: 1001 }";
+
+        given()
+                .contentType(ContentType.JSON)
+                .param(String.valueOf(idClient))
+        .when()
+                .delete(urlAPI + endpointClient + "/" + idClient)
+        .then()
+                .statusCode(200)
+                .assertThat().body(new IsEqual<>(expectedResult));
 
     }
 }
