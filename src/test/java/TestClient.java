@@ -50,4 +50,28 @@ public class TestClient {
                 .assertThat().body(containsString(expectedResult));
 
     }
+
+    @Test
+    @DisplayName("When updating a client, then it must be available in the result")
+    public void putClient() {
+
+        String updatedClient = "{\n" +
+                "  \"id\": 1001,\n" +
+                "  \"idade\": 35,\n" +
+                "  \"nome\": \"Igory\",\n" +
+                "  \"risco\": 50\n" +
+                "}";
+
+        String expectedResult = "{\"1001\":{\"nome\":\"Igory\",\"idade\":35,\"id\":1001,\"risco\":50}}";
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(updatedClient)
+        .when()
+                .put(urlAPI + endpointClient)
+        .then()
+                .statusCode(200)
+                .body(containsString(expectedResult));
+
+    }
 }
