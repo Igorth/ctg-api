@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="TestClient" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-25T20:53:10" hostname="Igors-MacBook-Pro.local" time="2.851">
+<testsuite name="TestClient" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-09-25T21:08:02" hostname="Igors-MacBook-Pro.local" time="30.146">
   <properties/>
-  <testcase name="When updating a client, then the client must be updated." classname="TestClient" time="2.851"/>
+  <testcase name="When deleting a client, then the client must be removed with successful" classname="TestClient" time="30.146"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

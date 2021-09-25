@@ -90,20 +90,33 @@ public class TestClient {
     }
 
     @Test
-    @DisplayName("Should delete the client with the given ID")
+    @DisplayName("When deleting a client, then the client must be removed with successful")
     public void deleteCliente() {
+
+        String registerClient = "{\n" +
+                "  \"id\": 1001,\n" +
+                "  \"idade\": 30,\n" +
+                "  \"nome\": \"Igor\",\n" +
+                "  \"risco\": 10000\n" +
+                "}";
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(registerClient)
+        .when()
+                .post(urlAPI + endpointClient)
+        .then()
+                .statusCode(201);
 
         int idClient = 1001;
         String expectedResult = "CLIENTE REMOVIDO: { NOME: Igor, IDADE: 30, ID: 1001 }";
 
         given()
                 .contentType(ContentType.JSON)
-                .param(String.valueOf(idClient))
         .when()
                 .delete(urlAPI + endpointClient + "/" + idClient)
         .then()
                 .statusCode(200)
-                .assertThat().body(new IsEqual<>(expectedResult));
-
+                .body(new IsEqual<>(expectedResult));
     }
 }
