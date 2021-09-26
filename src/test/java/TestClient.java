@@ -10,10 +10,13 @@ public class TestClient {
 
     String urlAPI = "http://localhost:8080";
     String endpointClient = "/cliente";
+    String endpointDeleteAll = "/apagaTodos";
 
     @Test
     @DisplayName("When getting all clients without registering, then the list must be empty.")
     public void getAllClients() {
+
+        deleteAllClientes();
 
         String expectedResult = "{}";
 
@@ -118,5 +121,19 @@ public class TestClient {
         .then()
                 .statusCode(200)
                 .body(new IsEqual<>(expectedResult));
+    }
+
+    public void deleteAllClientes() {
+
+        String expectedResult = "{}";
+
+        given()
+                .contentType(ContentType.JSON)
+        .when()
+                .delete(urlAPI + endpointClient + endpointDeleteAll)
+        .then()
+                .statusCode(200)
+                .body(new IsEqual<>(expectedResult));
+
     }
 }
