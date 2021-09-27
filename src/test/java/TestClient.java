@@ -5,20 +5,20 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 public class TestClient {
 
-    String urlAPI = "http://localhost:8080";
-    String endpointClient = "/cliente";
-    String endpointDeleteAll = "/apagaTodos";
+    private String urlAPI = "http://localhost:8080";
+    private String endpointClient = "/cliente";
+    private String endpointDeleteAll = "/apagaTodos";
+    private static final String expectedResult = "{}";
 
     @Test
     @DisplayName("When getting all clients without registering, then the list must be empty.")
-    public void getAllClients() {
+    public void whenGettingAllClientsWithoutRegistering_ThenTheListMustBeEmpty() {
 
         deleteAllClientes();
-
-        String expectedResult = "{}";
 
         given()
                 .contentType(ContentType.JSON)
@@ -26,7 +26,7 @@ public class TestClient {
                 .get(urlAPI)
         .then()
                 .statusCode(200)
-                .assertThat().body(new IsEqual<>(expectedResult));
+                .body(equalTo(expectedResult));
 
     }
 
