@@ -4,11 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
 import org.hamcrest.core.IsEqual;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 
 public class TestClient {
 
@@ -21,7 +19,7 @@ public class TestClient {
     @DisplayName("When getting all clients without registering, then the list must be empty.")
     public void whenGettingAllClientsWithoutRegistering_ThenTheListMustBeEmpty() {
 
-        deleteAllClientes();
+        deleteAllClients();
 
         given()
                 .contentType(ContentType.JSON)
@@ -99,14 +97,14 @@ public class TestClient {
 
     @Test
     @DisplayName("When deleting a client, then the client must be removed with successful")
-    public void deleteCliente() {
+    public void whenDeletingAClient_ThenTheClientMustBeRemovedWithSuccessful() {
 
-        String registerClient = "{\n" +
-                "  \"id\": 1001,\n" +
-                "  \"idade\": 30,\n" +
-                "  \"nome\": \"Igor\",\n" +
-                "  \"risco\": 10000\n" +
-                "}";
+        Client registerClient = new Client();
+
+        registerClient.setNome("Igor");
+        registerClient.setIdade(30);
+        registerClient.setId(1001);
+        registerClient.setRisco(10);
 
         given()
                 .contentType(ContentType.JSON)
@@ -116,19 +114,16 @@ public class TestClient {
         .then()
                 .statusCode(201);
 
-        int idClient = 1001;
-        String expectedResult = "CLIENTE REMOVIDO: { NOME: Igor, IDADE: 30, ID: 1001 }";
-
         given()
                 .contentType(ContentType.JSON)
         .when()
-                .delete(urlAPI + endpointClient + "/" + idClient)
+                .delete(urlAPI + endpointClient + "/" + registerClient.getId())
         .then()
                 .statusCode(200)
-                .body(new IsEqual<>(expectedResult));
+                .assertThat().body(not(contains("Igor")));
     }
 
-    public void deleteAllClientes() {
+    public void deleteAllClients() {
 
         String expectedResult = "{}";
 
@@ -138,7 +133,7 @@ public class TestClient {
                 .delete(urlAPI + endpointClient + endpointDeleteAll)
         .then()
                 .statusCode(200)
-                .body(new IsEqual<>(expectedResult));
+                .assertThat().body(new IsEqual<>(expectedResult));
 
     }
 }
