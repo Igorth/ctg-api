@@ -59,27 +59,26 @@ public class TestClient {
 
     @Test
     @DisplayName("When updating a client, then the client must be updated.")
-    public void putClient() {
+    public void whenUpdatingAClient_ThenTheClientMustBeUpdated() {
 
-        String newClient = "{\n" +
-                "  \"id\": 1001,\n" +
-                "  \"idade\": 30,\n" +
-                "  \"nome\": \"Igor\",\n" +
-                "  \"risco\": 50\n" +
-                "}";
+        Client registerClient = new Client();
 
-        String updatedClient = "{\n" +
-                "  \"id\": 1001,\n" +
-                "  \"idade\": 35,\n" +
-                "  \"nome\": \"Igor\",\n" +
-                "  \"risco\": 50\n" +
-                "}";
+        registerClient.setNome("Igor");
+        registerClient.setIdade(30);
+        registerClient.setId(1001);
+        registerClient.setRisco(10);
 
-        String responseExpected = "{\"1001\":{\"nome\":\"Igor\",\"idade\":35,\"id\":1001,\"risco\":50}}";
+        Client updatedClient = new Client();
+
+        updatedClient.setNome("Laisa");
+        updatedClient.setIdade(33);
+        updatedClient.setId(1001);
+        updatedClient.setRisco(10);
+
 
         given()
                 .contentType(ContentType.JSON)
-                .body(newClient)
+                .body(registerClient)
         .when()
                 .post(urlAPI + endpointClient)
         .then()
@@ -92,7 +91,10 @@ public class TestClient {
                 .put(urlAPI + endpointClient)
         .then()
                 .statusCode(200)
-                .assertThat().body(containsString(responseExpected));
+                .body("1001.nome", equalTo("Laisa"))
+                .body("1001.idade", equalTo(33))
+                .body("1001.id", equalTo(1001))
+                .body("1001.risco", equalTo(10));
     }
 
     @Test
