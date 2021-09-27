@@ -3,17 +3,20 @@ public class Client {
     private String nome;
     private int idade;
     private int id;
+    private int risco;
 
     public Client() {
         nome = "N/D";
         idade = 0;
         id = 0;
+        risco = 0;
     }
 
-    public Client(String nome, int idade, int id) {
+    public Client(String nome, int idade, int id, int risco) {
         this.nome = nome;
         this.idade = idade;
         this.id = id;
+        this.risco = risco;
     }
 
     public String getNome() {
@@ -38,5 +41,13 @@ public class Client {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getRisco() {
+        return risco;
+    }
+
+    public void setRisco(int risco) {
+        this.risco = risco;
     }
 }

@@ -1,9 +1,12 @@
 import io.restassured.http.ContentType;
-import org.hamcrest.core.IsEqual;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+
+import org.hamcrest.core.IsEqual;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -31,17 +34,15 @@ public class TestClient {
     }
 
     @Test
-    @DisplayName("When registering a client, then it must be available in the result.")
-    public void postClient() {
+    @DisplayName("When registering a client, then it is must be available in the result.")
+    public void whenRegisteringAClient_ThenItIsMustBeAvailableInTheResult() {
 
-        String registerClient = "{\n" +
-                "  \"id\": 1001,\n" +
-                "  \"idade\": 30,\n" +
-                "  \"nome\": \"Igor\",\n" +
-                "  \"risco\": 10000\n" +
-                "}";
+        Client registerClient = new Client();
 
-        String expectedResult = "{\"1001\":{\"nome\":\"Igor\",\"idade\":30,\"id\":1001,\"risco\":10000}}";
+        registerClient.setNome("Igor");
+        registerClient.setIdade(30);
+        registerClient.setId(1001);
+        registerClient.setRisco(10);
 
         given()
                 .contentType(ContentType.JSON)
@@ -50,8 +51,10 @@ public class TestClient {
                 .post(urlAPI + endpointClient)
         .then()
                 .statusCode(201)
-                .assertThat().body(containsString(expectedResult));
-
+                .body("1001.nome", equalTo("Igor"))
+                .body("1001.idade", equalTo(30))
+                .body("1001.risco", equalTo(10))
+                .body("1001.id", equalTo(1001));
     }
 
     @Test
