@@ -1,6 +1,8 @@
 import io.restassured.http.ContentType;
 
+import io.restassured.response.ValidatableResponse;
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,10 +13,10 @@ import org.hamcrest.core.IsEqual;
 
 public class TestClient {
 
-    private String urlAPI = "http://localhost:8080";
-    private String endpointClient = "/cliente";
-    private String endpointDeleteAll = "/apagaTodos";
-    private static final String expectedResult = "{}";
+    private static String urlClient = "http://localhost:8080";
+    private static String endpointClient = "/cliente";
+    private static String deleteAllClients = "/apagaTodos";
+    private static final String clientEmptyList = "{}";
 
     @Test
     @DisplayName("When getting all clients without registering, then the list must be empty.")
@@ -22,33 +24,18 @@ public class TestClient {
 
         deleteAllClients();
 
-        given()
-                .contentType(ContentType.JSON)
-        .when()
-                .get(urlAPI)
-        .then()
+        getAllClients()
                 .statusCode(200)
-                .body(equalTo(expectedResult));
-
+                .body(equalTo(clientEmptyList));
     }
 
     @Test
     @DisplayName("When registering a client, then it is must be available in the result.")
     public void whenRegisteringAClient_ThenItIsMustBeAvailableInTheResult() {
 
-        Client registerClient = new Client();
+        Client registerClient = new Client("Igor",30,1001,10);
 
-        registerClient.setNome("Igor");
-        registerClient.setIdade(30);
-        registerClient.setId(1001);
-        registerClient.setRisco(10);
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(registerClient)
-        .when()
-                .post(urlAPI + endpointClient)
-        .then()
+        postClient(registerClient)
                 .statusCode(HttpStatus.SC_CREATED)
                 .body("1001.nome", equalTo("Igor"))
                 .body("1001.idade", equalTo(30))
@@ -60,36 +47,16 @@ public class TestClient {
     @DisplayName("When updating a client, then the client must be updated.")
     public void whenUpdatingAClient_ThenTheClientMustBeUpdated() {
 
-        Client registerClient = new Client();
+        Client registerClient = new Client("Igor",30,1001,10);
 
-        registerClient.setNome("Igor");
-        registerClient.setIdade(30);
-        registerClient.setId(1001);
-        registerClient.setRisco(10);
-
-        Client updatedClient = new Client();
-
-        updatedClient.setNome("Laisa");
-        updatedClient.setIdade(33);
-        updatedClient.setId(1001);
-        updatedClient.setRisco(10);
+        Client updatedClient = new Client("Laisa", 33, 1001, 10);
 
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(registerClient)
-        .when()
-                .post(urlAPI + endpointClient)
-        .then()
+        postClient(registerClient)
                 .statusCode(HttpStatus.SC_CREATED);
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(updatedClient)
-        .when()
-                .put(urlAPI + endpointClient)
-        .then()
-                .statusCode(200)
+        putClient(updatedClient)
+                .statusCode(HttpStatus.SC_OK)
                 .body("1001.nome", equalTo("Laisa"))
                 .body("1001.idade", equalTo(33))
                 .body("1001.id", equalTo(1001))
@@ -100,38 +67,81 @@ public class TestClient {
     @DisplayName("When deleting a client, then the client must be removed with successful")
     public void whenDeletingAClient_ThenTheClientMustBeRemovedWithSuccessful() {
 
-        Client registerClient = new Client();
+        Client client = new Client("Igor",30,1001,10);
 
-        registerClient.setNome("Igor");
-        registerClient.setIdade(30);
-        registerClient.setId(1001);
-        registerClient.setRisco(10);
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(registerClient)
-        .when()
-                .post(urlAPI + endpointClient)
-        .then()
+        postClient(client)
                 .statusCode(HttpStatus.SC_CREATED);
 
-        given()
-                .contentType(ContentType.JSON)
-        .when()
-                .delete(urlAPI + endpointClient + "/" + registerClient.getId())
-        .then()
-                .statusCode(200)
+        deleteClient(client)
+                .statusCode(HttpStatus.SC_OK)
                 .assertThat().body(not(contains("Igor")));
     }
 
-    public void deleteAllClients() {
+    /**
+     * Deletes a specific client from our test API
+     * @param deleteThisClient
+     */
+    private ValidatableResponse deleteClient(Client deleteThisClient) {
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete(urlClient + endpointClient + "/" + deleteThisClient.getId())
+                .then();
+    }
+
+    /**
+     * Update client to our test API
+     * @param clientToPut
+     */
+    private ValidatableResponse putClient(Client clientToPut) {
+        return given()
+                .contentType(ContentType.JSON)
+                .body(clientToPut)
+                .when()
+                .put(urlClient + endpointClient)
+                .then();
+    }
+
+    /**
+     * Post client to our test API
+     * @param clientToPost
+     */
+    private ValidatableResponse postClient(Client clientToPost){
+        return given()
+                .contentType(ContentType.JSON)
+                .body(clientToPost)
+                .when()
+                .post(urlClient + endpointClient)
+                .then();
+    }
+
+    /**
+     * Get all customers registered in the API
+     * @return lists all clients wrapped in restAssured's response type
+     */
+    private ValidatableResponse getAllClients() {
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get(urlClient)
+                .then();
+    }
+
+    /**
+     * Support method to delete all clients from server.
+     * Used for testing only.
+     * Including a hook to run at the end of each test and leave the server in the same state it was before.
+     * Explicitly called in some tests as well as preparation
+     */
+    @AfterEach
+    private void deleteAllClients() {
 
         String expectedResult = "{}";
 
         given()
                 .contentType(ContentType.JSON)
         .when()
-                .delete(urlAPI + endpointClient + endpointDeleteAll)
+                .delete(urlClient + endpointClient + deleteAllClients)
         .then()
                 .statusCode(HttpStatus.SC_OK)
                 .assertThat().body(new IsEqual<>(expectedResult));
