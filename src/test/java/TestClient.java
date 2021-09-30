@@ -2,6 +2,7 @@ import io.restassured.http.ContentType;
 
 import io.restassured.response.ValidatableResponse;
 import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -66,32 +67,33 @@ public class TestClient {
     @DisplayName("When deleting a client, then the client must be removed with successful")
     public void whenDeletingAClient_ThenTheClientMustBeRemovedWithSuccessful() {
 
-        Client registerClient = new Client();
+        Client client = new Client("Igor",30,1001,10);
 
-        registerClient.setNome("Igor");
-        registerClient.setIdade(30);
-        registerClient.setId(1001);
-        registerClient.setRisco(10);
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(registerClient)
-        .when()
-                .post(urlAPI + endpointClient)
-        .then()
+        postClient(client)
                 .statusCode(HttpStatus.SC_CREATED);
 
-        given()
-                .contentType(ContentType.JSON)
-        .when()
-                .delete(urlAPI + endpointClient + "/" + registerClient.getId())
-        .then()
-                .statusCode(200)
+        deleteClient(client)
+                .statusCode(HttpStatus.SC_OK)
                 .assertThat().body(not(contains("Igor")));
     }
 
+    /**
+     * Deletes a specific client from our test API
+     * @param deleteThisClient
+     */
+    private ValidatableResponse deleteClient(Client deleteThisClient) {
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete(urlClient + endpointClient + "/" + deleteThisClient.getId())
+                .then();
+    }
 
-    public ValidatableResponse putClient(Client clientToPut) {
+    /**
+     * Update client to our test API
+     * @param clientToPut
+     */
+    private ValidatableResponse putClient(Client clientToPut) {
         return given()
                 .contentType(ContentType.JSON)
                 .body(clientToPut)
@@ -100,7 +102,11 @@ public class TestClient {
                 .then();
     }
 
-    public ValidatableResponse postClient(Client clientToPost){
+    /**
+     * Post client to our test API
+     * @param clientToPost
+     */
+    private ValidatableResponse postClient(Client clientToPost){
         return given()
                 .contentType(ContentType.JSON)
                 .body(clientToPost)
@@ -109,7 +115,11 @@ public class TestClient {
                 .then();
     }
 
-    public ValidatableResponse getAllClients() {
+    /**
+     * Get all customers registered in the API
+     * @return lists all clients wrapped in restAssured's response type
+     */
+    private ValidatableResponse getAllClients() {
         return given()
                 .contentType(ContentType.JSON)
                 .when()
@@ -117,7 +127,14 @@ public class TestClient {
                 .then();
     }
 
-    public void deleteAllClients() {
+    /**
+     * Support method to delete all clients from server.
+     * Used for testing only.
+     * Including a hook to run at the end of each test and leave the server in the same state it was before.
+     * Explicitly called in some tests as well as preparation
+     */
+    @AfterEach
+    private void deleteAllClients() {
 
         String expectedResult = "{}";
 

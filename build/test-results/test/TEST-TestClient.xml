@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="TestClient" tests="4" skipped="0" failures="0" errors="0" timestamp="2021-09-30T00:24:33" hostname="Igors-MacBook-Pro.local" time="8.889">
+<testsuite name="TestClient" tests="4" skipped="0" failures="0" errors="0" timestamp="2021-09-30T20:41:10" hostname="Igors-MacBook-Pro.local" time="3.526">
   <properties/>
-  <testcase name="When getting all clients without registering, then the list must be empty." classname="TestClient" time="4.655"/>
-  <testcase name="When registering a client, then it is must be available in the result." classname="TestClient" time="3.657"/>
-  <testcase name="When deleting a client, then the client must be removed with successful" classname="TestClient" time="0.359"/>
-  <testcase name="When updating a client, then the client must be updated." classname="TestClient" time="0.21"/>
+  <testcase name="When getting all clients without registering, then the list must be empty." classname="TestClient" time="2.194"/>
+  <testcase name="When registering a client, then it is must be available in the result." classname="TestClient" time="1.127"/>
+  <testcase name="When deleting a client, then the client must be removed with successful" classname="TestClient" time="0.075"/>
+  <testcase name="When updating a client, then the client must be updated." classname="TestClient" time="0.128"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
