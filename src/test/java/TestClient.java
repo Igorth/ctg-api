@@ -32,19 +32,9 @@ public class TestClient {
     @DisplayName("When registering a client, then it is must be available in the result.")
     public void whenRegisteringAClient_ThenItIsMustBeAvailableInTheResult() {
 
-        Client registerClient = new Client();
+        Client registerClient = new Client("Igor",30,1001,10);
 
-        registerClient.setNome("Igor");
-        registerClient.setIdade(30);
-        registerClient.setId(1001);
-        registerClient.setRisco(10);
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(registerClient)
-        .when()
-                .post(urlAPI + endpointClient)
-        .then()
+        postClient(registerClient)
                 .statusCode(HttpStatus.SC_CREATED)
                 .body("1001.nome", equalTo("Igor"))
                 .body("1001.idade", equalTo(30))
@@ -118,6 +108,16 @@ public class TestClient {
         .then()
                 .statusCode(200)
                 .assertThat().body(not(contains("Igor")));
+    }
+
+
+    public ValidatableResponse postClient(Client clientToPost){
+        return given()
+                .contentType(ContentType.JSON)
+                .body(clientToPost)
+                .when()
+                .post(urlClient + endpointClient)
+                .then();
     }
 
     public ValidatableResponse getAllClients(){
