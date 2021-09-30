@@ -46,36 +46,16 @@ public class TestClient {
     @DisplayName("When updating a client, then the client must be updated.")
     public void whenUpdatingAClient_ThenTheClientMustBeUpdated() {
 
-        Client registerClient = new Client();
+        Client registerClient = new Client("Igor",30,1001,10);
 
-        registerClient.setNome("Igor");
-        registerClient.setIdade(30);
-        registerClient.setId(1001);
-        registerClient.setRisco(10);
-
-        Client updatedClient = new Client();
-
-        updatedClient.setNome("Laisa");
-        updatedClient.setIdade(33);
-        updatedClient.setId(1001);
-        updatedClient.setRisco(10);
+        Client updatedClient = new Client("Laisa", 33, 1001, 10);
 
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(registerClient)
-        .when()
-                .post(urlAPI + endpointClient)
-        .then()
+        postClient(registerClient)
                 .statusCode(HttpStatus.SC_CREATED);
 
-        given()
-                .contentType(ContentType.JSON)
-                .body(updatedClient)
-        .when()
-                .put(urlAPI + endpointClient)
-        .then()
-                .statusCode(200)
+        putClient(updatedClient)
+                .statusCode(HttpStatus.SC_OK)
                 .body("1001.nome", equalTo("Laisa"))
                 .body("1001.idade", equalTo(33))
                 .body("1001.id", equalTo(1001))
@@ -111,6 +91,15 @@ public class TestClient {
     }
 
 
+    public ValidatableResponse putClient(Client clientToPut) {
+        return given()
+                .contentType(ContentType.JSON)
+                .body(clientToPut)
+                .when()
+                .put(urlClient + endpointClient)
+                .then();
+    }
+
     public ValidatableResponse postClient(Client clientToPost){
         return given()
                 .contentType(ContentType.JSON)
@@ -120,7 +109,7 @@ public class TestClient {
                 .then();
     }
 
-    public ValidatableResponse getAllClients(){
+    public ValidatableResponse getAllClients() {
         return given()
                 .contentType(ContentType.JSON)
                 .when()
