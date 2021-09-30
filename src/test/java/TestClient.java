@@ -1,5 +1,6 @@
 import io.restassured.http.ContentType;
 
+import io.restassured.response.ValidatableResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,10 +12,10 @@ import org.hamcrest.core.IsEqual;
 
 public class TestClient {
 
-    private String urlAPI = "http://localhost:8080";
-    private String endpointClient = "/cliente";
-    private String endpointDeleteAll = "/apagaTodos";
-    private static final String expectedResult = "{}";
+    private static String urlClient = "http://localhost:8080";
+    private static String endpointClient = "/cliente";
+    private static String deleteAllClients = "/apagaTodos";
+    private static final String clientEmptyList = "{}";
 
     @Test
     @DisplayName("When getting all clients without registering, then the list must be empty.")
@@ -22,14 +23,9 @@ public class TestClient {
 
         deleteAllClients();
 
-        given()
-                .contentType(ContentType.JSON)
-        .when()
-                .get(urlAPI)
-        .then()
+        getAllClients()
                 .statusCode(200)
-                .body(equalTo(expectedResult));
-
+                .body(equalTo(clientEmptyList));
     }
 
     @Test
@@ -124,6 +120,14 @@ public class TestClient {
                 .assertThat().body(not(contains("Igor")));
     }
 
+    public ValidatableResponse getAllClients(){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get(urlClient)
+                .then();
+    }
+
     public void deleteAllClients() {
 
         String expectedResult = "{}";
@@ -131,7 +135,7 @@ public class TestClient {
         given()
                 .contentType(ContentType.JSON)
         .when()
-                .delete(urlAPI + endpointClient + endpointDeleteAll)
+                .delete(urlClient + endpointClient + deleteAllClients)
         .then()
                 .statusCode(HttpStatus.SC_OK)
                 .assertThat().body(new IsEqual<>(expectedResult));
