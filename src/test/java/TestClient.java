@@ -1,5 +1,6 @@
 import io.restassured.http.ContentType;
 
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +49,7 @@ public class TestClient {
         .when()
                 .post(urlAPI + endpointClient)
         .then()
-                .statusCode(201)
+                .statusCode(HttpStatus.SC_CREATED)
                 .body("1001.nome", equalTo("Igor"))
                 .body("1001.idade", equalTo(30))
                 .body("1001.risco", equalTo(10))
@@ -80,7 +81,7 @@ public class TestClient {
         .when()
                 .post(urlAPI + endpointClient)
         .then()
-                .statusCode(201);
+                .statusCode(HttpStatus.SC_CREATED);
 
         given()
                 .contentType(ContentType.JSON)
@@ -112,7 +113,7 @@ public class TestClient {
         .when()
                 .post(urlAPI + endpointClient)
         .then()
-                .statusCode(201);
+                .statusCode(HttpStatus.SC_CREATED);
 
         given()
                 .contentType(ContentType.JSON)
@@ -132,7 +133,7 @@ public class TestClient {
         .when()
                 .delete(urlAPI + endpointClient + endpointDeleteAll)
         .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.SC_OK)
                 .assertThat().body(new IsEqual<>(expectedResult));
 
     }
